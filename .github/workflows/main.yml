@@ -52,7 +52,6 @@
 #           docker-compose -f docker-compose.yml images
 
 
-
 name: Deploy to Heroku (sin Docker)
 
 on:
@@ -61,17 +60,21 @@ on:
       - main
 
 jobs:
-  deploy-to-heroku:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up git user
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
       - name: Install Heroku CLI
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
-          heroku --version
 
       - name: Authenticate with Heroku
         env:
@@ -81,12 +84,8 @@ jobs:
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
           echo "machine git.heroku.com" >> ~/.netrc
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
-          heroku auth:whoami || true
+          heroku git:remote -a nombre-de-tu-app-en-heroku
 
-      - name: Add Heroku remote
-        run: |
-          git remote add heroku https://git.heroku.com/back-app.git
+      - name: Push to Heroku
+        run: git push heroku HEAD:main --force
 
-      - name: Push code to Heroku
-        run: |
-          git push heroku main --force
