@@ -84,7 +84,7 @@ jobs:
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
           echo "machine git.heroku.com" >> ~/.netrc
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
-          heroku git:remote -a nombre-de-tu-app-en-heroku
+          heroku git:remote -a back-app
 
       - name: Push to Heroku
         run: git push heroku HEAD:main --force
