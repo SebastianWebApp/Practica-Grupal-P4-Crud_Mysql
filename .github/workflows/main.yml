@@ -56,7 +56,7 @@ name: Deploy to Heroku (sin Docker)
 on:
   push:
     branches:
-      - main  # Ajusta si usas otra rama
+      - main
 
 jobs:
   deploy-to-heroku:
@@ -71,7 +71,7 @@ jobs:
           curl https://cli-assets.heroku.com/install.sh | sh
           heroku --version
 
-      - name: Setup Heroku authentication
+      - name: Setup Heroku auth
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
@@ -79,11 +79,11 @@ jobs:
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
           echo "machine git.heroku.com" >> ~/.netrc
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
-          heroku auth:whoami
 
-      - name: Add Heroku remote
-        run: heroku git:remote -a back-app
+      - name: Add Heroku git remote
+        run: |
+          heroku git:remote -a back-app
 
-      - name: Push code to Heroku
-        run: git push heroku main --force
-
+      - name: Push to Heroku
+        run: |
+          git push heroku main --force
