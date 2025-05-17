@@ -51,6 +51,8 @@
 #           echo "Verificando imágenes enviadas a DockerHub:"
 #           docker-compose -f docker-compose.yml images
 
+
+
 name: Deploy to Heroku (sin Docker)
 
 on:
@@ -71,7 +73,7 @@ jobs:
           curl https://cli-assets.heroku.com/install.sh | sh
           heroku --version
 
-      - name: Setup Heroku auth
+      - name: Authenticate with Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
@@ -79,11 +81,12 @@ jobs:
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
           echo "machine git.heroku.com" >> ~/.netrc
           echo "  login $HEROKU_API_KEY" >> ~/.netrc
+          heroku auth:whoami || true
 
-      - name: Add Heroku git remote
+      - name: Add Heroku remote
         run: |
-          heroku git:remote -a back-app
+          git remote add heroku https://git.heroku.com/back-app.git
 
-      - name: Push to Heroku
+      - name: Push code to Heroku
         run: |
           git push heroku main --force
